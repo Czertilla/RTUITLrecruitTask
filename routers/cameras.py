@@ -8,3 +8,6 @@ cameras = APIRouter(prefix="/cameras")
 def regist(request: SCameraRegist) -> UUID:
     return uuid4()
 
+@cameras.post("/case")
+async def send_case(request: camerus1) -> None:
+    ...
