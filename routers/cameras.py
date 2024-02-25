@@ -1,9 +1,10 @@
 from fastapi import APIRouter
-from schemas.cameras import SCameraRegist, BaseCamerus
+from schemas.cameras import SCameraRegist, camerus1
 from uuid import UUID, uuid4
 
 cameras = APIRouter(prefix="/cameras")
 
-@cameras.get("")
-async def check():
-    return "FINE"
+@cameras.post("/regist")
+def regist(request: SCameraRegist) -> UUID:
+    return uuid4()
+
