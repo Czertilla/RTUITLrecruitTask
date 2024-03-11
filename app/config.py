@@ -1,17 +1,15 @@
-from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from routers import routers
-__all__ = ['get_settings']
 
-class Settings(BaseSettings):
+from utils.singleton import Singleton
+from .contextmanager import lifespan
+from routers import routers
+
+class Settings(BaseSettings, Singleton):
     app_name: str = "Lizzard Dungeon Master"
     app_presets: dict ={
-        'title': app_name
+        'title': app_name,
+        'lifespan': lifespan
     }
 
-    model_config = SettingsConfigDict(env_file=".env")
+    # model_config = SettingsConfigDict(env_file=".env")
 
-
-@lru_cache
-def get_settings():
-    return Settings()

@@ -1,8 +1,6 @@
-from typing import Annotated
 from fastapi import FastAPI
-from .config import get_settings
+from .config import Settings
 from routers import include_routers
-__all__ = ['app']
 
-app = FastAPI(**get_settings().app_presets)
+app = FastAPI(**Settings().app_presets)
 include_routers(app)
