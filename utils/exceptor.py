@@ -15,7 +15,7 @@ class Exceptor:
                 return await coroutine(*args, **kwargs)
             except Exception as e:
                 logger = logging.getLogger(coroutine.__module__)
-                logger.error("%s coroutine chrused by: \n\t%s", coroutine.__name__, e)
+                logger.error("%s coroutine crushed by: \n\t%s", coroutine.__name__, e)
                 self.traceback()
         return protected
 
