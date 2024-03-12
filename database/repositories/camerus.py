@@ -1,6 +1,4 @@
-from typing import Annotated
-from fastapi import Query
-from sqlalchemy import select, update, exists
+from sqlalchemy import select, update
 from ..engine import new_session
 from ..models.camerus import DependenciesOrm
 from uuid import UUID
