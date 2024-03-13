@@ -1,5 +1,5 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 from .base import Base
 
 class CameraOrm(Base):
@@ -8,4 +8,4 @@ class CameraOrm(Base):
     latitude: Mapped[float]
     longitude: Mapped[float]
     description: Mapped[str] = mapped_column(default="")
-    type: Mapped[str] = mapped_column(ForeignKey("dependencies.key", ondelete="RESTRICT"))
+    cam_type: Mapped[str] = mapped_column(ForeignKey("dependencies.ID", ondelete="RESTRICT"))
