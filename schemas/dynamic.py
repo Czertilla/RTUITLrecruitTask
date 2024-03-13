@@ -2,6 +2,7 @@ import json
 from typing import Annotated
 from uuid import UUID
 from datetime import datetime
+from fastapi import Query
 from pydantic import create_model, BaseModel, ValidationError, Field
 from database.repositories import CamerusRepo
 from typing import Type
@@ -38,12 +39,17 @@ class DynamicModels:
 
     @classmethod
     async def generate(cls):
+        print("dynamic.generate")
         root_list = await CamerusRepo.collect()
         for root in root_list:
             cls.camerus_list.append(await cls.create(
                 (await CamerusRepo.find_by_id(root)).key, 
                 await CamerusRepo.construct(root)
                 ))
+            
+    @classmethod
+    def get_pattern(cls):
+        return Query(pattern='|'.join([cam_type.__name__ for cam_type in cls.camerus_list]))
 
     @classmethod
     async def validate(cls, data:dict) -> Type[BaseModel] | dict[str, ValidationError]:
