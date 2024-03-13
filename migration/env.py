@@ -5,14 +5,14 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from app.config import get_settings
+from database.engine.config import Settings
 from database.models.base import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 section = config.config_ini_section
-settings = get_settings()
+settings = Settings()
 config.set_section_option(section, "DB_HOST", settings.DB_HOST)
 config.set_section_option(section, "DB_NAME", settings.DB_NAME)
 config.set_section_option(section, "DB_PASS", settings.DB_PASS)
