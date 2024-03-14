@@ -137,11 +137,9 @@ class CamerusRepo():
     async def collect(cls) -> tuple[UUID]:
         async with new_session() as session:
             id_list = (await
-                session.execute(
+                session.execute( 
                     select(DependenciesOrm.ID).
                     where(DependenciesOrm.enclosure == None)
                 )
             ).scalars().all()
         return id_list
-         
-        

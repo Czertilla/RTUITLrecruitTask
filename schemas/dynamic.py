@@ -46,6 +46,7 @@ class DynamicModels:
                 (await CamerusRepo.find_by_id(root)).key, 
                 await CamerusRepo.construct(root)
                 ))
+        await cls.set_pattern()
             
     @classmethod
     async def set_pattern(cls) -> None:
