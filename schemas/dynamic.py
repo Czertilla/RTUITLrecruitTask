@@ -17,6 +17,7 @@ class DynamicModels:
     extraTypes.update(__builtins__)
 
     camerus_list: list[Type[BaseModel]] = []
+    camerus_pattern_list: list[str]
 
     @classmethod
     def get_builtin(cls, name: str):
@@ -39,7 +40,6 @@ class DynamicModels:
 
     @classmethod
     async def generate(cls):
-        print("dynamic.generate")
         root_list = await CamerusRepo.collect()
         for root in root_list:
             cls.camerus_list.append(await cls.create(
@@ -48,8 +48,8 @@ class DynamicModels:
                 ))
             
     @classmethod
-    def get_pattern(cls):
-        return Query(pattern='|'.join([cam_type.__name__ for cam_type in cls.camerus_list]))
+    async def set_pattern(cls) -> None:
+        cls.camerus_pattern_list = [cam_type.__name__ for cam_type in cls.camerus_list]
 
     @classmethod
     async def validate(cls, data:dict) -> Type[BaseModel] | dict[str, ValidationError]:
