@@ -46,7 +46,7 @@ class CamerusRepo():
                     select(DependenciesOrm).
                     where(DependenciesOrm.ID == ID)
                 )
-            ).one().tuple()[0]
+            ).scalar_one()
         return result
 
     @classmethod
@@ -76,6 +76,7 @@ class CamerusRepo():
             destination = destination,
             field_attrs = field_attrs
         )
+        DependenciesOrm()
         targetID = await cls.find_by_path(path)
         if targetID is None:
             raise NameError

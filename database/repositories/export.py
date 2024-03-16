@@ -1,9 +1,6 @@
-from fastapi import Depends
 from database.models.base import Base
 from database.engine import new_session
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
-import inspect
 
 class ExportRepo:
     orm = Base
@@ -14,10 +11,12 @@ class ExportRepo:
 
     @classmethod
     async def export(cls, data: list[dict], unique_column_name) -> dict:
-        badkeys=cls.filt(data[0])
-        invalid_params = [f"invalid colums names: {badkeys}, have been ignored"]
+        invalid_params = []
         updated_params = []
         count = 0
+        badkeys=cls.filt(data[0])
+        if badkeys:
+            invalid_params.append(f"invalid colums names: {badkeys}, have been ignored")
         for record in data:
             [record.pop(key) for key in badkeys]
             async with new_session() as session:
