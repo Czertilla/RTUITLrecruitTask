@@ -7,6 +7,3 @@ class ViolationORM(Base):
 
     violation_type: Mapped[str] = mapped_column(unique=True)
     fine: Mapped[float]
-
-    
-    __table_args__ = (UniqueConstraint("ID", 'violation_type', name='export_constraint'),)
