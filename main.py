@@ -79,7 +79,11 @@ async def db_requests():
     })
     ...
 
+
+
 if __name__ == "__main__":
-    run(db_requests())
+    import uvicorn
+    uvicorn.run(app=app)
+    # run(db_requests())
     
 
