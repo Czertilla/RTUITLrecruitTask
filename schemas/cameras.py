@@ -1,7 +1,7 @@
-from pydantic import BaseModel, ValidationError, validator
+from pydantic import BaseModel, validator
 from typing import Annotated
-from fastapi import Depends, Query
-from .dynamic import DynamicModels
+from fastapi import Query, UploadFile
+from .dynamic import DynamicModels 
 
 class SCoordsGPS(BaseModel):
     latitude: Annotated[float, Query(ge= -90, le=90, description="GPS latitude")]
@@ -19,5 +19,5 @@ class SCameraRegist(BaseModel):
         return value
 
 class SCameraCase (BaseModel):
-    # photo: UploadFilee
+    photo: UploadFile
     metadata: bytes
