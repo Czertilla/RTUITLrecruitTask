@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from schemas.cameras import SCameraRegist, SCameraCase
 from schemas.dynamic import DynamicModels
@@ -22,7 +22,7 @@ async def regist(request: SCameraRegist) -> UUID:
     ))
 
 @cameras.post("/case")
-async def send_case(request: SCameraCase) -> None:
+async def send_case(request: SCameraCase = Depends()) -> None:
     metadata = await deserialize(request.metadata)
     model = await DynamicModels.validate(metadata)
     if type(model) is dict:
