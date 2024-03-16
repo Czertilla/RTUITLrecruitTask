@@ -1,10 +1,7 @@
 from sqlalchemy import DateTime, ForeignKey
 from .base import Base
-from typing import Any
-from uuid import uuid4, UUID
-from sqlalchemy.types import JSON
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, column_property
-from sqlalchemy.ext.declarative import declared_attr
+from uuid import UUID
+from sqlalchemy.orm import Mapped, mapped_column
 
 class CaseORM(Base):
     __tablename__ = "cases"
