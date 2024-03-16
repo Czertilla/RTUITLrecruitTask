@@ -1,6 +1,6 @@
 from uuid import uuid4
-from sqlalchemy import ForeignKey, PickleType, Table
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID
 from .base import Base
 from typing import Any
