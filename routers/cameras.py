@@ -29,3 +29,4 @@ async def send_case(request: SCameraCase = Depends()) -> None:
         raise HTTPException(status_code=422, detail=jsonable_encoder(model))
     
     
+    
