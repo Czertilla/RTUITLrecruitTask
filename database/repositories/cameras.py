@@ -1,4 +1,4 @@
-from sqlalchemy import select, update
+from sqlalchemy import select, exists
 
 from database.repositories.camerus import CamerusRepo
 
@@ -46,7 +46,10 @@ class CameraRepo:
             camera = (await session.execute(
                 select(CameraOrm).
                 where(CameraOrm.ID == ID)
-            )).one().tuple()[0]
-            camera.cam_type = await CamerusRepo.find_by_id(camera.cam_type).key
+            )).scalar_one_or_none()
+            camera.cam_type = (await CamerusRepo.find_by_id(camera.cam_type)).key
         return camera
-        
+
+    @classmethod
+    async def check_existence(cls, ID: UUID) -> bool:
+        return (await cls.find_by_id(ID)) is not None
