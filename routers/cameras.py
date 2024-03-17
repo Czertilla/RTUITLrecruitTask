@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
-from schemas.cameras import SCameraRegist, SCameraCase
+from schemas.cameras import Camerus, SCameraRegist, SCameraCase, SCaseInsert
 from schemas.dynamic import DynamicModels
-from database.repositories import CameraRepo
+from database.repositories import CameraRepo, FileRepo
 from uuid import UUID
-from pydantic import ValidationError
 from utils.requests import deserialize
 from logging import getLogger
+from database.repositories.cases import CaseRepo
 
 logger = getLogger(__name__)
 
@@ -23,10 +23,13 @@ async def regist(request: SCameraRegist) -> UUID:
 
 @cameras.post("/case")
 async def send_case(request: SCameraCase = Depends()) -> None:
-    metadata = await deserialize(request.metadata)
-    model = await DynamicModels.validate(metadata)
+    metadata = await deserialize(await request.metadata.read())
+    model, mdl_name = await DynamicModels.validate(metadata)
     if type(model) is dict:
         raise HTTPException(status_code=422, detail=jsonable_encoder(model))
-    
-    
-    
+    case_data = (await Camerus.parse(model, mdl_name))
+    case_data.update(
+        {"photo_id": await FileRepo.insert(await request.photo.read())}
+    )
+    model = SCaseInsert.model_validate(case_data)
+    await CaseRepo.insert(model)
