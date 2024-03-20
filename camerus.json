@@ -1,0 +1,51 @@
+{
+    "camerus1": {
+        "transport_chars": "ABC",
+        "transport_numbers": "123",
+        "transport_region": "77",
+        "camera_id": "104fc08a-efb6-427f-9193-2d54e4ed3e12",
+        "violation_id": "de163a57-fd92-47a6-9b78-82bb0d41be71",
+        "violation_value": "62km/h",
+        "skill_value": 1,
+        "datetime": "2024-01-01T00:00:00+00:00"
+    },
+    "camerus2": 
+    {
+        "transport": {
+            "chars": "ABC",
+            "numbers": "123",
+            "transport_region": "77"
+        },
+        "camera":{
+            "id": "d5cf359d-f9c3-48a1-8bb2-7a2f66f26670"
+        },
+        "violation":{
+            "id": "de163a57-fd92-47a6-9b78-82bb0d41be71",
+            "value": "62km/h"
+        },
+        "skill":{
+            "value": 1
+        },
+        "datetime": {
+            "year": 2024,
+            "month": 1,
+            "day": 1,
+            "hour": 0,
+            "minute": 0,
+            "seconds": 0,
+            "utf_offset": "+00:00"
+        }
+    },
+    "camerus3": {
+        "transport": "1ABC2377",
+        "camera":{
+            "id": "baa1b593-4635-45d4-9a29-181a7f5bb77a"
+        },
+        "violation":{
+            "id": "b8c548ca-b143-4e88-9c2d-fc0599ad570b",
+            "value": "62km/h"
+        },
+        "skill": 1,
+        "datetime": 1804067200
+    }
+}

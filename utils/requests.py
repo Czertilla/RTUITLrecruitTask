@@ -27,6 +27,7 @@ async def deserialize(bytecode: bytes) -> dict:
             logger.info("Status: %s", response.status)
             logger.info("Content-type: %s", response.headers['content-type'])
             data = await response.json()
+    print(data)
     return data
 
 @exc.aiotect

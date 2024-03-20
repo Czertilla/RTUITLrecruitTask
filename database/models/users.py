@@ -4,7 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database.models import cases
 from database.models import votes
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTableUUID
-
+6
 if TYPE_CHECKING:
     from .cases import CaseORM
     from .votes import VoteORM
@@ -17,11 +17,11 @@ class UserORM(SQLAlchemyBaseUserTableUUID, Base):
     wallet: Mapped[float] = mapped_column(default=0.)
     skill: Mapped[int] = mapped_column(default=1)
 
-    cases: Mapped[list["CaseORM"]] = relationship(
+    cases_list: Mapped[list["CaseORM"]] = relationship(
         secondary="votes",
-        back_populates="users",
+        back_populates="users_list",
         viewonly=True
     )
-    case_associations: Mapped[list["VoteORM"]] = relationship(
-        back_populates="user_table"
+    votes_list: Mapped[list["VoteORM"]] = relationship(
+        back_populates="user_model"
     )

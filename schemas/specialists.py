@@ -5,7 +5,7 @@ from database.models.cases import CaseStatus
 from schemas.cameras import SCaseInsert
 
 class SGetCaseResponce(BaseModel):
-    photo: UploadFile
+    photo: bytes
     metadata: SCaseInsert
     ...
 

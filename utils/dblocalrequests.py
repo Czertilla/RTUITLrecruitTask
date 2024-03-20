@@ -5,7 +5,7 @@ from asyncio import run
 
 async def requests():
 # fill with Repo classmethods
-# await CamerusRepo.create_root("camerus1")
+    # await CamerusRepo.create_root("camerus1")
 
     # await CamerusRepo.put("camerus1", "transport_chars", "str", field_attrs={
     #     "pattern": "[A-Z]{3}"
@@ -77,9 +77,9 @@ async def requests():
     # })
 
     # await CamerusRepo.create_root("camerus3")
-    await CamerusRepo.put("camerus3", "transport", "str", field_attrs={
-        "pattern": "[0-9][A-Z]{3}[0-9]{4}"
-    })
+    # await CamerusRepo.put("camerus3", "transport", "str", field_attrs={
+    #     "pattern": "[0-9][A-Z]{3}[0-9]{4}"
+    # })
     # await CamerusRepo.put("camerus3", "camera", "dict")
     # await CamerusRepo.put("camerus3.camera", "id", "UUID")
     # await CamerusRepo.put("camerus3", "violation", "dict")
@@ -91,7 +91,7 @@ async def requests():
     #     "le": 100
     # })
     # await CamerusRepo.put("camerus3", "datetime", "int")
-    # await UserRepo.set_manager(UUID("30e7ef00-9f20-491a-9b93-0fe7576ed57e"))
+    # await UserRepo.set_manager(UUID("b0a83716-20cc-4643-a98d-c2468a8bfa59"))
     ...
 
 if __name__ == "__main__":

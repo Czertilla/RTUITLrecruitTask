@@ -6,8 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 
 if TYPE_CHECKING:
-    from .votes import VoteORM
     from .users import UserORM
+    from .votes import VoteORM
 
 class CaseStatus:
     INITIATED = "initiated"
@@ -29,11 +29,13 @@ class CaseORM(Base):
     status: Mapped[str] = mapped_column(default=CaseStatus.INITIATED)
     status_timestamp: Mapped[datetime] = mapped_column(default=func.now())
 
-    users: Mapped[list["UserORM"]] = relationship(
-        secondary="votes", back_populates="cases", viewonly=True
+    users_list: Mapped[list["UserORM"]] = relationship(
+        secondary="votes", 
+        back_populates="cases_list",
+        viewonly=True
     )
 
-    user_associations: Mapped[list["VoteORM"]] = relationship(
-        back_populates="case_table"
+    votes_list: Mapped[list["VoteORM"]] = relationship(
+        back_populates="case_model"
     )
 
