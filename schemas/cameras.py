@@ -48,7 +48,7 @@ class Camerus:
             violation.get('id'),
             violation.get('value'),
             data.get('skill'),
-            datetime.fromtimestamp(int(data.get('datetime')))
+            datetime.fromtimestamp(float(data.get('datetime')), tz=None)
         )
 
     @classmethod
@@ -98,6 +98,8 @@ class SCaseInsert (BaseModel):
     violation_value: Annotated[str, Field(max_length=100)]
     skill_value: Annotated[int, Field(ge=1, le=100)]
     case_timestamp: datetime
+    class Config:
+        from_atributes = True
 
     @validator("case_timestamp")
     def ensure_time_range(cls, value: datetime):
@@ -108,9 +110,9 @@ class SCaseInsert (BaseModel):
     # @validator("camera_id")
     # async def check_camera_existence(cls, value: UUID):
     #     if not (await CameraRepo.check_existence(value)):
-    #         raise ValueError(f"camera with ID {value} doesn`t exist in database")
+    #         raise ValueError(f"camera with id {value} doesn`t exist in database")
     
     # @validator("violation_id")
     # async def check_violation_existence(cls, value: UUID):
     #     if not  (await ViolationRepo.check_existence(value)):
-    #         raise ValueError(f"violation with ID {value} doesn`t exist in database")
+    #         raise ValueError(f"violation with id {value} doesn`t exist in database")
