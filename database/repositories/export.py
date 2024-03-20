@@ -33,7 +33,7 @@ class ExportRepo:
             else:
                 for key, val in record.items():
                     setattr(model, key, val)
-                updated_params.append(str(tuple(record.values())+(model.ID,)))
+                updated_params.append(str(tuple(record.values())+(model.id,)))
                 updated = False
             try:
                 async with new_session() as session:

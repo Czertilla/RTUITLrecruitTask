@@ -37,19 +37,19 @@ class CameraRepo:
             session.add(camera)
             await session.flush()
             await session.commit()
-        return camera.ID
+        return camera.id
 
     @classmethod
     @exc.aiotect
-    async def find_by_id(cls, ID: UUID) -> CameraOrm:
+    async def find_by_id(cls, id: UUID) -> CameraOrm:
         async with new_session() as session:
             camera = (await session.execute(
                 select(CameraOrm).
-                where(CameraOrm.ID == ID)
+                where(CameraOrm.id == id)
             )).scalar_one_or_none()
             camera.cam_type = (await CamerusRepo.find_by_id(camera.cam_type)).key
         return camera
 
     @classmethod
-    async def check_existence(cls, ID: UUID) -> bool:
-        return (await cls.find_by_id(ID)) is not None
+    async def check_existence(cls, id: UUID) -> bool:
+        return (await cls.find_by_id(id)) is not None

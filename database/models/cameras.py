@@ -8,4 +8,4 @@ class CameraOrm(Base):
     latitude: Mapped[float]
     longitude: Mapped[float]
     description: Mapped[str] = mapped_column(default="")
-    cam_type: Mapped[str] = mapped_column(ForeignKey("dependencies.ID", ondelete="RESTRICT"))
+    cam_type: Mapped[str] = mapped_column(ForeignKey("dependencies.id", ondelete="RESTRICT"))

@@ -16,7 +16,7 @@ class CamerusRepo():
             session.add(data)
             await session.flush()
             await session.commit()
-        return data.ID
+        return data.id
 
 
     @classmethod
@@ -25,7 +25,7 @@ class CamerusRepo():
         async with new_session() as session:
             if (
                 await session.execute(
-                    select(DependenciesOrm.ID).
+                    select(DependenciesOrm.id).
                     where(DependenciesOrm.key == root_name))
             ).all():
                 logger.error("%s Camerus dataType already exist", root_name)
@@ -39,12 +39,12 @@ class CamerusRepo():
 
     @classmethod
     @exc.aiotect
-    async def find_by_id(cls, ID: UUID) -> DependenciesOrm:
+    async def find_by_id(cls, id: UUID) -> DependenciesOrm:
         async with new_session() as session:
             result: DependenciesOrm = (
                 await session.execute(
                     select(DependenciesOrm).
-                    where(DependenciesOrm.ID == ID)
+                    where(DependenciesOrm.id == id)
                 )
             ).scalar_one()
         return result
@@ -57,7 +57,7 @@ class CamerusRepo():
             for point in path.split('.'):
                 targetID: DependenciesOrm = (
                     await session.execute(
-                        select(DependenciesOrm.ID).
+                        select(DependenciesOrm.id).
                         where(
                             DependenciesOrm.key == point,
                             DependenciesOrm.enclosure == targetID
@@ -83,13 +83,13 @@ class CamerusRepo():
         dependency.enclosure = targetID
         async with new_session() as session:
             if result:=(await session.execute(
-                select(DependenciesOrm.ID).
+                select(DependenciesOrm.id).
                 where(DependenciesOrm.key == dependency.key,
                       DependenciesOrm.enclosure == dependency.enclosure)
             )).scalar():
                 await session.execute(
                         update(DependenciesOrm).                                                                                                   
-                        where(DependenciesOrm.ID == result).
+                        where(DependenciesOrm.id == result).
                         values(
                             field_attrs = dependency.field_attrs,
                             value_type = dependency.value_type,
@@ -112,7 +112,7 @@ class CamerusRepo():
             targetID = await cls.find_by_path(path)
         async with new_session() as session:
             return (await session.execute(
-                select(DependenciesOrm).where(DependenciesOrm.ID == targetID)
+                select(DependenciesOrm).where(DependenciesOrm.id == targetID)
             )).one()
 
 
@@ -136,11 +136,7 @@ class CamerusRepo():
     @classmethod
     @exc.aiotect
     async def collect(cls) -> tuple[UUID]:
+        stmt = select(DependenciesOrm.id).where(DependenciesOrm.enclosure == None)
         async with new_session() as session:
-            id_list = (await
-                session.execute( 
-                    select(DependenciesOrm.ID).
-                    where(DependenciesOrm.enclosure == None)
-                )
-            ).scalars().all()
-        return id_list
+            result = await session.execute(stmt)
+        return result.scalars().all()

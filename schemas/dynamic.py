@@ -32,7 +32,7 @@ class DynamicModels:
                 "validate_default": True
             }
             if val_type is dict:
-                val_type = await cls.create(dependency.key, await CamerusRepo.construct(dependency.ID))
+                val_type = await cls.create(dependency.key, await CamerusRepo.construct(dependency.id))
             field_attrs.update(dependency.field_attrs)
             kwargs.update({dependency.key: (Annotated[val_type, Field(**field_attrs)], None)})
         setattr(cls, name, new_model:=create_model(name, __base__=BaseModel, **kwargs))
@@ -58,8 +58,8 @@ class DynamicModels:
         for camerus in cls.camerus_list:
             try:
                 model = camerus.model_validate_json(json.dumps(data))
-                return model
+                return model, camerus.__name__
             except ValidationError as e:
                 exceptions.update({camerus.__name__: e.errors()})
         else:
-            return exceptions
+            return exceptions, "error"
