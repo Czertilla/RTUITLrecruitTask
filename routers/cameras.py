@@ -10,7 +10,7 @@ from database.repositories.cases import CaseRepo
 
 logger = getLogger(__name__)
 
-cameras = APIRouter(prefix="/cameras")
+cameras = APIRouter(prefix="/cameras", tags=["cams"])
 
 @cameras.post("/regist")
 async def regist(request: SCameraRegist) -> UUID:
