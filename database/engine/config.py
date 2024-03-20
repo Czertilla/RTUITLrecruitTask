@@ -9,5 +9,7 @@ class Settings(BaseSettings, Singleton):
     DB_USER: str
     DB_PASS: str
     DB_DBMS: str = "sqlite"
+    USERS_SECTRET: str
+    PASSW_SECTRET: str
 
     model_config = SettingsConfigDict(env_file=".env")

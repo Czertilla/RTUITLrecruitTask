@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker
 from .config import Settings
 
-match Settings().DB_DBMS:
+match (settings:=Settings()).DB_DBMS:
     case "sqlite":
         from .sqlite import engine
     case "postgres":
