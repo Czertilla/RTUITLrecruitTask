@@ -4,7 +4,7 @@ from fastapi_users.authentication import JWTStrategy
 from app.auth.core import get_user_manager
 from database.engine import settings
 from fastapi_users import FastAPIUsers
-from database.models.users import UserORM
+from models.users import UserORM
 
 
 SECRET = settings.USERS_SECTRET

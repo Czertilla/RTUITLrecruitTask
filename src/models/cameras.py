@@ -1,6 +1,6 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
-from .base import Base
+from ..database.engine.base import Base
 
 class CameraOrm(Base):
     __tablename__ = "cameras"

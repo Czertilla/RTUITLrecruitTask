@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING
-from database.models.cases import CaseORM
+from models.cases import CaseORM
 from database.engine import new_session
-from database.models.votes import VoteORM
+from models.votes import VoteORM
 from database.repositories.users import UserRepo
 from schemas.cameras import SCaseInsert
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
-from database.models import UserORM
+from models import UserORM
 from random import randint
 
 class CaseRepo:

@@ -12,7 +12,7 @@ from utils.importer import import_excel
 from app.auth.core import get_user_manager
 from app.auth.auth import fastapi_users
 
-from database.models.users import UserORM
+from models.users import UserORM
 
 logger = getLogger(__name__)
 

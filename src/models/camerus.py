@@ -2,7 +2,7 @@ from uuid import uuid4
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID
-from .base import Base
+from ..database.engine.base import Base
 from typing import Any
 
 class DependenciesOrm(Base):
