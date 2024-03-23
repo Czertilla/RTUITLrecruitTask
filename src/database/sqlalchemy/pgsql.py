@@ -1,4 +1,4 @@
-from app.config import Settings
+from utils.settings import Settings
 from sqlalchemy.ext.asyncio import create_async_engine
 
 settings = Settings()
