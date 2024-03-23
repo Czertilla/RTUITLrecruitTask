@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from schemas.cameras import Camerus, SCameraRegist, SCameraCase, SCaseInsert
-from src.services.dynamic import DynamicModels
-from database.repositories import CameraRepo, FileRepo
+from services.dynamic import DynamicModels
+from repositories import CameraRepo, FileRepo
 from uuid import UUID
 from utils.requests import deserialize
 from logging import getLogger
-from database.repositories.cases import CaseRepo
+from repositories.cases import CaseRepo
 
 logger = getLogger(__name__)
 

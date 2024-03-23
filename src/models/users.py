@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
-from database.models.base import Base
+from database import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from database.models import cases
-from database.models import votes
+from models import cases
+from models import votes
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTableUUID
 6
 if TYPE_CHECKING:

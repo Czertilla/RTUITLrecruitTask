@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 from sqlalchemy import ForeignKey, func
-from ..database.engine.base import Base
+from database import Base
 from uuid import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime

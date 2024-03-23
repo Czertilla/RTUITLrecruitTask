@@ -1,10 +1,7 @@
-
-from typing import TYPE_CHECKING
 from api.auth.auth import fastapi_users, auth_backend
 from schemas.auth import UserCreate, UserRead, UserUpdate
 
-if TYPE_CHECKING:
-    from fastapi import FastAPI
+from fastapi import FastAPI
 
 def include_routers(app: FastAPI):
     app.include_router(

@@ -1,10 +1,10 @@
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Response
 
-from app.auth.auth import fastapi_users
-from database.models.users import UserORM
-from database.repositories.cases import CaseRepo
-from database.repositories.files import FileRepo
+from api.auth.auth import fastapi_users
+from models.users import UserORM
+from repositories.cases import CaseRepo
+from repositories.files import FileRepo
 from schemas.specialists import SGetCaseResponce, SVoteRequest, SVoteResponce, SCaseInsert
 
 specialist = fastapi_users.current_user(verified=True, superuser=False) 

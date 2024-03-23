@@ -4,9 +4,9 @@ from pydantic import BaseModel, Field, validator
 from typing import Annotated, Type
 from fastapi import Query, UploadFile
 
-from database.repositories.violations import ViolationRepo
-from src.services.dynamic import DynamicModels 
-from database.repositories import CameraRepo
+from repositories.violations import ViolationRepo
+from services.dynamic import DynamicModels 
+from repositories import CameraRepo
 from asyncio import run
 
 class Camerus:
@@ -111,7 +111,7 @@ class SCaseInsert (BaseModel):
     # async def check_camera_existence(cls, value: UUID):
     #     if not (await CameraRepo.check_existence(value)):
     #         raise ValueError(f"camera with id {value} doesn`t exist in database")
-    
+
     # @validator("violation_id")
     # async def check_violation_existence(cls, value: UUID):
     #     if not  (await ViolationRepo.check_existence(value)):

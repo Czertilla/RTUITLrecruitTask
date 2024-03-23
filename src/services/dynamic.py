@@ -3,7 +3,7 @@ from typing import Annotated
 from uuid import UUID
 from datetime import datetime
 from pydantic import create_model, BaseModel, ValidationError, Field
-from database.repositories import CamerusRepo
+from repositories import CamerusRepo
 from typing import Type
 from models import DependenciesOrm
 

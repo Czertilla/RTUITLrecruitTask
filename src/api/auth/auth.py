@@ -2,12 +2,12 @@ import uuid
 from fastapi_users.authentication import CookieTransport, AuthenticationBackend
 from fastapi_users.authentication import JWTStrategy
 from api.auth.core import get_user_manager
-from database.engine import settings
+from utils.settings import getSettings
 from fastapi_users import FastAPIUsers
 from models.users import UserORM
 
 
-SECRET = settings.USERS_SECTRET
+SECRET = getSettings().USERS_SECTRET
 cookie_transport = CookieTransport(cookie_name="auth", cookie_max_age=3600)
 
 def get_jwt_strategy() -> JWTStrategy:

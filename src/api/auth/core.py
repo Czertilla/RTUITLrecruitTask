@@ -6,12 +6,12 @@ from fastapi_users import BaseUserManager, UUIDIDMixin, models, exceptions
 from fastapi_users.jwt import generate_jwt, decode_jwt
 import jwt  
 
-from database.repositories.users import  get_user_db
+from repositories.users import  get_user_db
 from models.users import UserORM
-from database.engine import settings
+from utils.settings import getSettings
 from logging import getLogger
 
-SECRET = settings.PASSW_SECTRET
+SECRET = getSettings().PASSW_SECTRET
 
 logger = getLogger(__name__)
 
