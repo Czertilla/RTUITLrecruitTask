@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from schemas.cameras import Camerus, SCameraRegist, SCameraCase, SCaseInsert
-from schemas.dynamic import DynamicModels
+from src.services.dynamic import DynamicModels
 from database.repositories import CameraRepo, FileRepo
 from uuid import UUID
 from utils.requests import deserialize

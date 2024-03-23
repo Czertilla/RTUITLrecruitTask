@@ -9,8 +9,8 @@ from database.repositories.users import UserRepo
 from schemas.auth import UserRead
 from schemas.managers import SImportExelRespose, SVerifyResponse
 from utils.importer import import_excel
-from app.auth.core import get_user_manager
-from app.auth.auth import fastapi_users
+from api.auth.core import get_user_manager
+from api.auth.auth import fastapi_users
 
 from models.users import UserORM
 

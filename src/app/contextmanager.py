@@ -1,6 +1,6 @@
 from fastapi.concurrency import asynccontextmanager
-from schemas.dynamic import DynamicModels
-from fastapi import FastAPI, Depends
+from services.dynamic import DynamicModels
+from fastapi import FastAPI
 
 async def startup():
     await DynamicModels.generate()

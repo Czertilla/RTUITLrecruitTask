@@ -7,7 +7,7 @@ from fastapi_users.jwt import generate_jwt, decode_jwt
 import jwt  
 
 from database.repositories.users import  get_user_db
-from database.models.users import UserORM
+from models.users import UserORM
 from database.engine import settings
 from logging import getLogger
 

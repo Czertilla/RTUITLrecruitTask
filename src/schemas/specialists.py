@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import Query, UploadFile
 from pydantic import BaseModel
-from database.models.cases import CaseStatus
+from models.cases import CaseStatus
 from schemas.cameras import SCaseInsert
 
 class SGetCaseResponce(BaseModel):

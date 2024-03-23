@@ -2,7 +2,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from utils.singleton import Singleton
 from .contextmanager import lifespan
-from routers import routers
 
 class Settings(BaseSettings, Singleton):
     app_name: str = "Lizzard Dungeon Master"
@@ -11,5 +10,13 @@ class Settings(BaseSettings, Singleton):
         'lifespan': lifespan
     }
 
-    # model_config = SettingsConfigDict(env_file=".env")
+    DB_HOST: str|None
+    DB_PORT: str|None
+    DB_NAME: str|None
+    DB_USER: str|None
+    DB_PASS: str|None
+    DB_DBMS: str = "sqlite"
+    USERS_SECTRET: str
+    PASSW_SECTRET: str
 
+    model_config = SettingsConfigDict(env_file=".env")

@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker
-from .config import Settings
+from app.config import Settings
 
 match (settings:=Settings()).DB_DBMS:
     case "sqlite":

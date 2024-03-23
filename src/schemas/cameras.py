@@ -5,7 +5,7 @@ from typing import Annotated, Type
 from fastapi import Query, UploadFile
 
 from database.repositories.violations import ViolationRepo
-from schemas.dynamic import DynamicModels 
+from src.services.dynamic import DynamicModels 
 from database.repositories import CameraRepo
 from asyncio import run
 
