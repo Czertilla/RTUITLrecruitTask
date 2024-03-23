@@ -1,6 +1,6 @@
 from uuid import UUID
-from database.repositories import CamerusRepo
-from database.repositories.users import UserRepo
+from repositories import CamerusRepo
+from repositories.users import UserRepo
 from asyncio import run
 
 async def requests():

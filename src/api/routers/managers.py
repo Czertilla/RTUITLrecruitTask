@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from logging import getLogger
 
 from pydantic import Field
-from database.repositories.export import ExportRepo
-from database.repositories.users import UserRepo
+from repositories.export import ExportRepo
+from repositories.users import UserRepo
 from schemas.auth import UserRead
 from schemas.managers import SImportExelRespose, SVerifyResponse
 from utils.importer import import_excel
