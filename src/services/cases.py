@@ -2,28 +2,29 @@ from uuid import UUID
 from schemas.cameras import SCameraCase, SCaseInsert
 from services.dynamic import CamerusService
 from units_of_work.case import CaseUOW
-from services.service import BaseService
+from utils.absract.service import BaseService
 from utils.requests import deserialize
 
 
 class CaseService(BaseService):
     async def handle_case(
         self,
-        case_schema: SCameraCase,
-        uow: CaseUOW
+        case_schema: SCameraCase
     ) -> None:
         metadata = await deserialize(await case_schema.metadata.read())
-        model, mdl_name = await (camerus_service:= CamerusService()).validate(metadata)
+        model, mdl_name = await (camerus_service:= CamerusService(self.uow)).validate(metadata)
         if type(model) is dict:
             return model
         byte_array = await case_schema.photo.read()
         case_data = (await camerus_service.parse(model, mdl_name))
-        async with uow:
+        async with self.uow:
             case_data.update(
-                {"photo_id": await uow.files.upload_bytes(byte_array)}
+                {"photo_id": await self.uow.files.upload_bytes(byte_array)}
             )
             model = SCaseInsert.model_validate(case_data).model_dump()
-            return await uow.cases.insert()
+            result = await self.uow.cases.add_one(model)
+            await self.uow.commit()
+        return result
         
 
 

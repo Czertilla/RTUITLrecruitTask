@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from uuid import UUID
 from sqlalchemy import Result, insert, select
 from utils.absract.repository import AbstractRepository
-
+ 
 class IdMinxin:
     @declared_attr
     def id(cls) -> Mapped[UUID]:

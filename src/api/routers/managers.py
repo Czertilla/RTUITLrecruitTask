@@ -1,17 +1,18 @@
-from typing import TYPE_CHECKING, Annotated
+from typing import Annotated
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from logging import getLogger
 
 from pydantic import Field
-from repositories.export import ExportRepo
+from api.dependencies import ExportUOWDep, UserUOWDep
+from services.export import ExportService
 from repositories.users import UserRepo
 from schemas.managers import SImportExelRespose, SVerifyResponse
-from utils.importer import import_excel
 from api.auth.core import get_user_manager
 from api.auth.auth import fastapi_users
 
 from models.users import UserORM
+from services.users import UserService
 
 logger = getLogger(__name__)
 
@@ -19,23 +20,22 @@ manager = fastapi_users.current_user(superuser=True)
 managers = APIRouter(prefix="/managers", tags=["managers"])
 usermanager = get_user_manager()
 
-export_repo_dep = {repo.orm.__tablename__: repo for repo in ExportRepo.__subclasses__()}
-export_tables_pattern = '|'.join(export_repo_dep.keys())
-
 @managers.post("/import/{table}/upload-file")
 async def import_from_xlsx(
-    table: Annotated[str, Field(pattern=export_tables_pattern)],
+    table: Annotated[str, Field(pattern=ExportService.export_tables_pattern)],
     file: UploadFile,
+    uow: ExportUOWDep,
     current_user: UserORM = Depends(manager),
 ) -> SImportExelRespose:
-    repository = export_repo_dep.get(table)
-    data = import_excel(await file.read())
-    success = (await repository.export(data))
-    return success
+    return ExportService(uow).export(table, file)
 
 @managers.post("/verify")
-async def verify_user(id: UUID, current_user: UserORM = Depends(manager)) -> SVerifyResponse:
-    user = await UserRepo.verify(id)
+async def verify_user(
+    id: UUID, 
+    uow: UserUOWDep,
+    current_user: UserORM = Depends(manager)
+) -> SVerifyResponse:
+    user = await UserService(uow).verify(id)
     if user is None:
         raise HTTPException(status_code=404, detail="user not found")
     return {

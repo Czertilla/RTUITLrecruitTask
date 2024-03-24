@@ -1,11 +1,11 @@
 import json
-from typing import TYPE_CHECKING, Annotated
+from typing import Annotated
 from uuid import UUID
 from datetime import datetime
 from pydantic import create_model, BaseModel, ValidationError, Field
 from typing import Type
 from models import DependenciesOrm
-from units_of_work.camerus import CamerusUOW
+from utils.absract.service import BaseService
 
 class Camerus:
     @classmethod
@@ -49,8 +49,7 @@ class Camerus:
             datetime.fromtimestamp(float(data.get('datetime')), tz=None)
         )
 
-class CamerusService:
-
+class CamerusService(BaseService):
     extraTypes = {
         "UUID": UUID,
         "datetime": datetime,
@@ -65,7 +64,7 @@ class CamerusService:
         return self.extraTypes.get(name)
     
 
-    async def create(self, uow, name: str, data: list[DependenciesOrm]):
+    async def create(self, name: str, data: list[DependenciesOrm]):
         kwargs = {}
         for dependency in data:
             val_type = self.get_builtin(dependency.value_type)
@@ -73,21 +72,21 @@ class CamerusService:
                 "validate_default": True
             }
             if val_type is dict:
-                async with uow:
-                    val_type = await self.create(dependency.key, await uow.camerus.construct(dependency.id))
+                async with self.uow:
+                    val_type = await self.create(dependency.key, await self.uow.camerus.construct(dependency.id))
             field_attrs.update(dependency.field_attrs)
             kwargs.update({dependency.key: (Annotated[val_type, Field(**field_attrs)], None)})
         setattr(self, name, new_model:=create_model(name, __base__=BaseModel, **kwargs))
         return new_model
 
 
-    async def generate(self, uow: CamerusUOW):
+    async def generate(self):
         root_list: tuple[UUID] = await self.uow.camerus.collect()
-        async with uow:
+        async with self.uow:
             for root in root_list:
                 self.camerus_list.append(await self.create(
-                    (await uow.camerus.find_by_id(root)).key, 
-                    await uow.camerus.construct(root)
+                    (await self.uow.camerus.find_by_id(root)).key,
+                    await self.uow.camerus.construct(root)
                     ))
         await self.set_pattern()
             
@@ -106,8 +105,8 @@ class CamerusService:
                 exceptions.update({camerus.__name__: e.errors()})
         else:
             return exceptions, "error"
-    
-    
+
+
     async def parse(self, model: Type[BaseModel], model_name: str) -> dict:
         values = getattr(Camerus, f"parse_{model_name}")(model.model_dump())
         keys = (
@@ -125,6 +124,3 @@ class CamerusService:
             in 
                 zip(keys, values)
         }
-
-
-

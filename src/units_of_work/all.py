@@ -6,7 +6,7 @@ from repositories.export import ExportRepo
 from repositories.files import FileRepo
 from repositories.users import UserRepo
 from repositories.violations import ViolationRepo
-from units_of_work.unit_of_work import UnitOfWork
+from units_of_work._unit_of_work import UnitOfWork
 
 class AllUOW(UnitOfWork):
     async def __aenter__(self):

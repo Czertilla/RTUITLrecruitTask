@@ -4,7 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from models import cases
 from models import votes
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTableUUID
-6
+
 if TYPE_CHECKING:
     from .cases import CaseORM
     from .votes import VoteORM

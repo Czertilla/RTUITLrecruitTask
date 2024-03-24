@@ -1,5 +1,5 @@
 from repositories.camerus import CamerusRepo
-from units_of_work.unit_of_work import UnitOfWork
+from units_of_work._unit_of_work import UnitOfWork
 
 class CamerusUOW(UnitOfWork):
     async def __aenter__(self):

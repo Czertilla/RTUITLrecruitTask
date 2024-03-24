@@ -1,9 +1,6 @@
 from sqlalchemy import select, exists
 
 from database import BaseRepo
-from repositories.camerus import CamerusRepo
-
-from database import new_session
 from models.cameras import CameraOrm
 from uuid import UUID
 import logging
