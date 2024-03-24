@@ -4,71 +4,11 @@ from pydantic import BaseModel, Field, validator
 from typing import Annotated, Type
 from fastapi import Query, UploadFile
 
+from repositories.camerus import CamerusRepo
 from repositories.violations import ViolationRepo
-from services.dynamic import DynamicModels 
+from services.dynamic import CamerusService 
 from repositories import CameraRepo
 from asyncio import run
-
-class Camerus:
-    @classmethod
-    def parse_camerus1(cls, data: dict) -> tuple:
-        numbers = data.get("transport_numbers")
-        return (
-            f"{numbers[0]}{data.get('transport_chars')}{numbers[1:]}{data.get('transport_region')}",
-            data.get("camera_id"),
-            data.get("violation_id"),
-            data.get("violation_value"),
-            data.get('skill_value'),
-            data.get('datetime')
-        )  
-
-    @classmethod
-    def parse_camerus2(cls, data: dict) -> tuple:
-        transport:dict = data.get("transport")
-        numbers = transport.get("numbers")
-        camera:dict = data.get('camera')
-        violation: dict = data.get('violation')
-        skill: dict = data.get('skill')
-        return (
-            f"{numbers[0]}{transport.get('chars')}{numbers[1:]}{data.get('region')}",
-            camera.get("id"),
-            violation.get('id'),
-            violation.get('value'),
-            skill.get('value'),
-            datetime(**data.get('datetime'))
-        )
-    
-    @classmethod
-    def parse_camerus3(cls, data: dict) -> tuple:
-        camera:dict = data.get('camera')
-        violation: dict = data.get('violation')
-        return (
-            data.get('transport'),
-            camera.get("id"),
-            violation.get('id'),
-            violation.get('value'),
-            data.get('skill'),
-            datetime.fromtimestamp(float(data.get('datetime')), tz=None)
-        )
-
-    @classmethod
-    async def parse(cls, model: Type[BaseModel], model_name: str) -> dict:
-        values = getattr(cls, f"parse_{model_name}")(model.model_dump())
-        keys = (
-            "transport",
-            "camera_id",
-            "violation_id",
-            "violation_value",
-            'skill_value',
-            'case_timestamp'
-        )
-        return {
-            key:value 
-            for 
-                key, value
-            in 
-                zip(keys, values)
-        }
 
 
 class SCoordsGPS(BaseModel):
@@ -82,7 +22,7 @@ class SCameraRegist(BaseModel):
 
     @validator("CameraType")
     def check_camera_type(cls, value):
-        if value not in (pattern:=DynamicModels.camerus_pattern_list):
+        if value not in (pattern:=CamerusService(CamerusRepo).camerus_pattern_list):
             raise ValueError(f"CameraType can be only {'|'.join(pattern)}")
         return value
 

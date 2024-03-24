@@ -33,6 +33,13 @@ class SQLAlchemyRepository(AbstractRepository):
             if commit:
                 await session.commit()
         return result
+    
+
+    async def merge(cls, model: model):
+        async with new_session() as session:
+            await session.merge(model)
+            await session.flush()
+            await session.commit()
 
 
     async def add_one(self, data: dict) -> UUID:
@@ -43,12 +50,14 @@ class SQLAlchemyRepository(AbstractRepository):
         )
         return (await self.execute(stmt, flush=False)).scalar_one()
     
+
     async def find_by_id(self, id: UUID) -> model: # type: ignore
         stmt = (
             select(self.model).
             where(self.model.id == id)
         )
-        return (await self.execute(stmt, flush=False, commit=False)).scalar_one()
+        return (await self.execute(stmt, flush=False, commit=False)).scalar_one_or_none()
+
 
     async def find_all(self) -> list[model]: # type: ignore
         stmt = select(self.model)

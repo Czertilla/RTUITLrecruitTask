@@ -6,7 +6,6 @@ from logging import getLogger
 from pydantic import Field
 from repositories.export import ExportRepo
 from repositories.users import UserRepo
-from schemas.auth import UserRead
 from schemas.managers import SImportExelRespose, SVerifyResponse
 from utils.importer import import_excel
 from api.auth.core import get_user_manager
@@ -27,7 +26,7 @@ export_tables_pattern = '|'.join(export_repo_dep.keys())
 async def import_from_xlsx(
     table: Annotated[str, Field(pattern=export_tables_pattern)],
     file: UploadFile,
-    current_user: UserORM = Depends(manager)
+    current_user: UserORM = Depends(manager),
 ) -> SImportExelRespose:
     repository = export_repo_dep.get(table)
     data = import_excel(await file.read())

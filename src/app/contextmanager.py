@@ -1,9 +1,10 @@
 from fastapi.concurrency import asynccontextmanager
-from services.dynamic import DynamicModels
+from repositories.camerus import CamerusRepo
+from services.dynamic import CamerusService
 from fastapi import FastAPI
 
 async def startup():
-    await DynamicModels.generate()
+    await CamerusService(CamerusRepo).generate()
 
 async def shutdown():
     ...

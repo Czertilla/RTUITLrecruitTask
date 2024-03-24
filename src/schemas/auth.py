@@ -5,7 +5,7 @@ from fastapi_users import schemas
 from pydantic import field_validator, validator
 from fastapi import Depends
 
-from database.repositories.users import UserRepo
+from repositories.users import UserRepo
 
 
 class UserRead(schemas.BaseUser[uuid.UUID]):
