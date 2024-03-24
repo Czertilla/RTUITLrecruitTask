@@ -1,60 +1,110 @@
 import json
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 from uuid import UUID
 from datetime import datetime
 from pydantic import create_model, BaseModel, ValidationError, Field
-from repositories import CamerusRepo
 from typing import Type
 from models import DependenciesOrm
+from utils.abstract_repo import AbstractRepository
+from utils.abstract_serv import BaseService
 
+from repositories import CamerusRepo
 
-class DynamicModels:
+class Camerus:
+    @classmethod
+    def parse_camerus1(cls, data: dict) -> tuple:
+        numbers = data.get("transport_numbers")
+        return (
+            f"{numbers[0]}{data.get('transport_chars')}{numbers[1:]}{data.get('transport_region')}",
+            data.get("camera_id"),
+            data.get("violation_id"),
+            data.get("violation_value"),
+            data.get('skill_value'),
+            data.get('datetime')
+        )  
+
+    @classmethod
+    def parse_camerus2(cls, data: dict) -> tuple:
+        transport:dict = data.get("transport")
+        numbers = transport.get("numbers")
+        camera:dict = data.get('camera')
+        violation: dict = data.get('violation')
+        skill: dict = data.get('skill')
+        return (
+            f"{numbers[0]}{transport.get('chars')}{numbers[1:]}{data.get('region')}",
+            camera.get("id"),
+            violation.get('id'),
+            violation.get('value'),
+            skill.get('value'),
+            datetime(**data.get('datetime'))
+        )
+    
+    @classmethod
+    def parse_camerus3(cls, data: dict) -> tuple:
+        camera:dict = data.get('camera')
+        violation: dict = data.get('violation')
+        return (
+            data.get('transport'),
+            camera.get("id"),
+            violation.get('id'),
+            violation.get('value'),
+            data.get('skill'),
+            datetime.fromtimestamp(float(data.get('datetime')), tz=None)
+        )
+
+class CamerusService:
+    repository: CamerusRepo
+    
     extraTypes = {
-    "UUID": UUID,
-    "datetime": datetime,
+        "UUID": UUID,
+        "datetime": datetime,
     }
     extraTypes.update(__builtins__)
 
     camerus_list: list[Type[BaseModel]] = []
     camerus_pattern_list: list[str]
 
-    @classmethod
-    def get_builtin(cls, name: str):
-        return cls.extraTypes.get(name)
+
+    def __init__(self, repository: AbstractRepository) -> None:
+        self.repository: AbstractRepository = repository()
+
+
+    def get_builtin(self, name: str):
+        return self.extraTypes.get(name)
     
-    @classmethod
-    async def create(cls, name: str, data: list[DependenciesOrm]):
+
+    async def create(self, name: str, data: list[DependenciesOrm]):
         kwargs = {}
         for dependency in data:
-            val_type = cls.get_builtin(dependency.value_type)
+            val_type = self.get_builtin(dependency.value_type)
             field_attrs = {
                 "validate_default": True
             }
             if val_type is dict:
-                val_type = await cls.create(dependency.key, await CamerusRepo.construct(dependency.id))
+                val_type = await self.create(dependency.key, await self.repository.construct(dependency.id))
             field_attrs.update(dependency.field_attrs)
             kwargs.update({dependency.key: (Annotated[val_type, Field(**field_attrs)], None)})
-        setattr(cls, name, new_model:=create_model(name, __base__=BaseModel, **kwargs))
+        setattr(self, name, new_model:=create_model(name, __base__=BaseModel, **kwargs))
         return new_model
 
-    @classmethod
-    async def generate(cls):
-        root_list = await CamerusRepo.collect()
-        for root in root_list:
-            cls.camerus_list.append(await cls.create(
-                (await CamerusRepo.find_by_id(root)).key, 
-                await CamerusRepo.construct(root)
-                ))
-        await cls.set_pattern()
-            
-    @classmethod
-    async def set_pattern(cls) -> None:
-        cls.camerus_pattern_list = [cam_type.__name__ for cam_type in cls.camerus_list]
 
-    @classmethod
-    async def validate(cls, data:dict) -> Type[BaseModel] | dict[str, ValidationError]:
+    async def generate(self):
+        root_list = await self.repository.collect()
+        for root in root_list:
+            self.camerus_list.append(await self.create(
+                (await self.repository.find_by_id(root)).key, 
+                await self.repository.construct(root)
+                ))
+        await self.set_pattern()
+            
+
+    async def set_pattern(self) -> None:
+        self.camerus_pattern_list = [cam_type.__name__ for cam_type in self.camerus_list]
+
+
+    async def validate(self, data:dict) -> Type[BaseModel] | dict[str, ValidationError]:
         exceptions: dict[str, ValidationError] = {}
-        for camerus in cls.camerus_list:
+        for camerus in self.camerus_list:
             try:
                 model = camerus.model_validate_json(json.dumps(data))
                 return model, camerus.__name__
@@ -62,3 +112,25 @@ class DynamicModels:
                 exceptions.update({camerus.__name__: e.errors()})
         else:
             return exceptions, "error"
+    
+    
+    async def parse(self, model: Type[BaseModel], model_name: str) -> dict:
+        values = getattr(Camerus, f"parse_{model_name}")(model.model_dump())
+        keys = (
+            "transport",
+            "camera_id",
+            "violation_id",
+            "violation_value",
+            'skill_value',
+            'case_timestamp'
+        )
+        return {
+            key:value 
+            for 
+                key, value
+            in 
+                zip(keys, values)
+        }
+
+
+
