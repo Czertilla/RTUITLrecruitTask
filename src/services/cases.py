@@ -1,41 +1,30 @@
 from uuid import UUID
-from repositories.camerus import CamerusRepo
-from repositories.files import FileRepo
 from schemas.cameras import SCameraCase, SCaseInsert
 from services.dynamic import CamerusService
-from services.files import FileService
-from utils.abstract_repo import AbstractRepository
-from utils.abstract_serv import BaseService
+from units_of_work.case import CaseUOW
+from services.service import BaseService
 from utils.requests import deserialize
 
 
 class CaseService(BaseService):
-    def __init__(self, repository: AbstractRepository) -> None:
-        super().__init__(repository)
-        self.camerus_service = CamerusService(CamerusRepo)
-        self.file_service = FileService(FileRepo)
-
-    
-    async def insert(self, data: SCaseInsert) -> UUID:
-        record = data.model_dump()
-        return await self.repository.add_one(record)
-    
-
     async def handle_case(
         self,
-        case_schema: SCameraCase
+        case_schema: SCameraCase,
+        uow: CaseUOW
     ) -> None:
         metadata = await deserialize(await case_schema.metadata.read())
-        model, mdl_name = await self.camerus_service.validate(metadata)
+        model, mdl_name = await (camerus_service:= CamerusService()).validate(metadata)
         if type(model) is dict:
             return model
         byte_array = await case_schema.photo.read()
-        case_data = (await self.camerus_service.parse(model, mdl_name))
-        case_data.update(
-            {"photo_id": await self.file_service.upload_bytes(byte_array)}
-        )
-        model = SCaseInsert.model_validate(case_data)
-        await self.insert(model)
+        case_data = (await camerus_service.parse(model, mdl_name))
+        async with uow:
+            case_data.update(
+                {"photo_id": await uow.files.upload_bytes(byte_array)}
+            )
+            model = SCaseInsert.model_validate(case_data).model_dump()
+            return await uow.cases.insert()
+        
 
 
     # async def get_current_case(self, user: UserORM) -> CaseORM|None:

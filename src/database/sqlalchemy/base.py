@@ -4,10 +4,10 @@ from sqlalchemy.types import JSON, DateTime
 from datetime import datetime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.ext.asyncio.session import AsyncSession
 from uuid import UUID
 from sqlalchemy import Result, insert, select
-from database import new_session
-from utils.abstract_repo import AbstractRepository
+from utils.absract.repository import AbstractRepository
 
 class IdMinxin:
     @declared_attr
@@ -25,21 +25,20 @@ class Base(DeclarativeBase, IdMinxin):
 class SQLAlchemyRepository(AbstractRepository):
     model = Base
 
-    async def execute(self, stmt, flush=True, commit=True) -> Result:
-        async with new_session() as session:
-            result: Result = await session.execute(statement=stmt)
-            if flush:
-                await session.flush()
-            if commit:
-                await session.commit()
-        return result
-    
+    def __init__(self, session: AsyncSession) -> None:
+        super().__init__()
+        self.session = session
 
-    async def merge(cls, model: model):
-        async with new_session() as session:
-            await session.merge(model)
-            await session.flush()
-            await session.commit()
+    async def execute(self, stmt, flush=False) -> Result:
+        result: Result = await self.session.execute(statement=stmt)
+        if flush:
+            await self.session.flush()
+        return result
+
+    async def merge(self, data_orm: model, flush=False):
+        await self.session.merge(data_orm)
+        if flush:
+            await self.session.flush()
 
 
     async def add_one(self, data: dict) -> UUID:
@@ -51,16 +50,20 @@ class SQLAlchemyRepository(AbstractRepository):
         return (await self.execute(stmt, flush=False)).scalar_one()
     
 
-    async def find_by_id(self, id: UUID) -> model: # type: ignore
+    async def find_by_id(self, id: UUID) -> model:
         stmt = (
             select(self.model).
             where(self.model.id == id)
         )
-        return (await self.execute(stmt, flush=False, commit=False)).scalar_one_or_none()
+        return (await self.execute(stmt)).scalar_one_or_none()
 
 
-    async def find_all(self) -> list[model]: # type: ignore
+    async def find_all(self) -> list[model]:
         stmt = select(self.model)
         result = await self.execute(stmt)
         result = [row[0].to_read_model() for row in result.all()]
         return result
+    
+
+    async def check_existence(self, id: UUID) -> bool:
+        return (await self.find_by_id(id)) is not None

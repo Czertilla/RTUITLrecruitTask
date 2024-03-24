@@ -1,10 +1,9 @@
 from uuid import UUID
 from schemas.cameras import SCameraCase, SCaseInsert
-from utils.abstract_serv import BaseService
 from utils.requests import deserialize
 
 
-class Userservice(BaseService):
+class Userservice:
     ...
     # @classmethod 
     # async def check_username(self, value) -> bool:

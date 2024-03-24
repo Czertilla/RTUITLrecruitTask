@@ -31,17 +31,6 @@ class CamerusRepo(BaseRepo):
         return await self.insert(dependency)
 
 
-    async def find_by_id(self, id: UUID) -> model:
-        async with new_session() as session:
-            result: self.model = (
-                await session.execute(
-                    select(self.model).
-                    where(self.model.id == id)
-                )
-            ).scalar_one()
-        return result
-
-
     async def find_by_path(self, path: str) -> UUID|None:
         async with new_session() as session:
             targetID = None

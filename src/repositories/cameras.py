@@ -14,11 +14,3 @@ exc = Exceptor()
 
 class CameraRepo(BaseRepo):
     model = CameraOrm
-
-
-    async def check_existence(self, id: UUID) -> bool:
-        return (await self.find_by_id(id)) is not None
-    
-
-    async def find_by_path(self, camerus_name: str)-> UUID:
-        return await CamerusRepo().find_by_path(camerus_name)

@@ -5,10 +5,7 @@ from datetime import datetime
 from pydantic import create_model, BaseModel, ValidationError, Field
 from typing import Type
 from models import DependenciesOrm
-from utils.abstract_repo import AbstractRepository
-from utils.abstract_serv import BaseService
-
-from repositories import CamerusRepo
+from units_of_work.camerus import CamerusUOW
 
 class Camerus:
     @classmethod
@@ -53,8 +50,7 @@ class Camerus:
         )
 
 class CamerusService:
-    repository: CamerusRepo
-    
+
     extraTypes = {
         "UUID": UUID,
         "datetime": datetime,
@@ -65,15 +61,11 @@ class CamerusService:
     camerus_pattern_list: list[str]
 
 
-    def __init__(self, repository: AbstractRepository) -> None:
-        self.repository: AbstractRepository = repository()
-
-
     def get_builtin(self, name: str):
         return self.extraTypes.get(name)
     
 
-    async def create(self, name: str, data: list[DependenciesOrm]):
+    async def create(self, uow, name: str, data: list[DependenciesOrm]):
         kwargs = {}
         for dependency in data:
             val_type = self.get_builtin(dependency.value_type)
@@ -81,20 +73,22 @@ class CamerusService:
                 "validate_default": True
             }
             if val_type is dict:
-                val_type = await self.create(dependency.key, await self.repository.construct(dependency.id))
+                async with uow:
+                    val_type = await self.create(dependency.key, await uow.camerus.construct(dependency.id))
             field_attrs.update(dependency.field_attrs)
             kwargs.update({dependency.key: (Annotated[val_type, Field(**field_attrs)], None)})
         setattr(self, name, new_model:=create_model(name, __base__=BaseModel, **kwargs))
         return new_model
 
 
-    async def generate(self):
-        root_list = await self.repository.collect()
-        for root in root_list:
-            self.camerus_list.append(await self.create(
-                (await self.repository.find_by_id(root)).key, 
-                await self.repository.construct(root)
-                ))
+    async def generate(self, uow: CamerusUOW):
+        root_list: tuple[UUID] = await self.uow.camerus.collect()
+        async with uow:
+            for root in root_list:
+                self.camerus_list.append(await self.create(
+                    (await uow.camerus.find_by_id(root)).key, 
+                    await uow.camerus.construct(root)
+                    ))
         await self.set_pattern()
             
 

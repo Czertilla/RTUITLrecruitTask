@@ -18,7 +18,6 @@ specialists = APIRouter(prefix="/specs", tags=["specialists"])
                 "content": {"image/png": {}}
             }
         },
-
         response_class=Response
         )
 async def get_case(user: UserORM = Depends(specialist)):

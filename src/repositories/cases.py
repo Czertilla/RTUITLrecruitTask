@@ -8,31 +8,23 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from models import UserORM
 from random import randint
+from database import BaseRepo
 
-class CaseRepo:
-    @classmethod
-    async def insert(cls, data: SCaseInsert):
-        record = data.model_dump()
-        async with new_session() as session:
-            session.add(CaseORM(**record))
-            await session.flush()
-            await session.commit()
-    
-    @classmethod
-    async def get_current_case(cls, user: UserORM) -> CaseORM|None:
+class CaseRepo(BaseRepo):
+    async def get_current_case(self, user: UserORM) -> CaseORM|None:
         for vote in user.votes_list:
             if vote.justify is None:
                 return vote.case_model
 
-    @classmethod
-    async def get_random_case(cls, user: UserORM) -> CaseORM|None:
+
+    async def get_random_case(self, user: UserORM) -> CaseORM|None:
         async with new_session() as session:
             user = await session.scalar(
                 select(UserORM). 
                 where(UserORM.id == user.id).
                 options(selectinload(UserORM.votes_list), selectinload(UserORM.cases_list))
             )
-        if (case_data:= await cls.get_current_case(user)) is None:
+        if (case_data:= await self.get_current_case(user)) is None:
             stmt = (
                 select(CaseORM).
                 where(
@@ -52,9 +44,9 @@ class CaseRepo:
                 UserRepo.merge(user)
                 return case_data
 
-    @classmethod
-    async def vote(cls, user: UserORM, vote: str) -> str:
-        if (case_data := await cls.get_current_case(user)) is None:
+
+    async def vote(self, user: UserORM, vote: str) -> str:
+        if (case_data := await self.get_current_case(user)) is None:
             return "case not selected"
         return "OK"
 

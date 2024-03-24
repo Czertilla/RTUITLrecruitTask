@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
-from api.dependencies import get_camera_service, get_case_service
+from api.dependencies import CameraUOWDep, CaseUOWDep
 from schemas.cameras import SCameraRegist, SCameraCase
 from services.cameras import CameraService
 from services.cases import CaseService
@@ -15,15 +15,15 @@ cameras = APIRouter(prefix="/cameras", tags=["cams"])
 @cameras.post("/regist")
 async def regist(
     request: SCameraRegist, 
-    service: Annotated[CameraService, Depends(get_camera_service)]
+    uow: CameraUOWDep
 ) -> UUID:
-    return await service.regist(request)
+    return await CameraService(uow).regist(request)
 
 @cameras.post("/case")
 async def send_case(
     request: Annotated[SCameraCase, Depends()],
-    case_service: Annotated[CaseService, Depends(get_case_service)],
+    uow: CaseUOWDep,
 ) -> None:
-    answer = await case_service.handle_case(request)
+    answer = await CaseService(uow).handle_case(request)
     if answer is not None:
         raise HTTPException(status_code=422, detail=jsonable_encoder(answer))
