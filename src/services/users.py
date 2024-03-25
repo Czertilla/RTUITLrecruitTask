@@ -26,17 +26,3 @@ class UserService(BaseService):
             await self.uow.commit()
             return user
     
-
-    async def set_manager(self, id: UUID):
-        async with self.uow:
-            user: UserORM = await self.uow.users.find_by_id(id)
-            if user is None:
-                logger.error("user %s not found", id)
-                logger.warning("superuser status for user %s is not set", id)
-                return
-            user.is_superuser = True
-            user.is_active = True
-            user.is_verified = True
-            user.role = "manager"
-            await self.uow.users.merge(user)
-            await self.uow.commit()
