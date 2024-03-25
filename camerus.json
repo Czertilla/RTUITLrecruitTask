@@ -3,8 +3,8 @@
         "transport_chars": "ABC",
         "transport_numbers": "123",
         "transport_region": "77",
-        "camera_id": "104fc08a-efb6-427f-9193-2d54e4ed3e12",
-        "violation_id": "de163a57-fd92-47a6-9b78-82bb0d41be71",
+        "camera_id": "0b4bb438-a339-4ccb-a96d-4104892712c6",
+        "violation_id": "de9cb379-fcc8-4cdc-86de-34dced158381",
         "violation_value": "62km/h",
         "skill_value": 1,
         "datetime": "2024-01-01T00:00:00+00:00"
