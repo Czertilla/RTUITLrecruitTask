@@ -91,8 +91,8 @@ async def requests():
         #     "le": 100
         # })
         # await uow.camerus.put("camerus3", "datetime", "int")
-
-        ...
+        # await uow.users.set_manager("5f382e1c-d335-48d4-a4c9-66217a538bcc")
+        await uow.commit()  
 
 if __name__ == "__main__":
     run(requests())

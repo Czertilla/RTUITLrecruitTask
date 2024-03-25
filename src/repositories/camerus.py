@@ -22,7 +22,7 @@ class CamerusRepo(BaseRepo):
             key = root_name,
             value_type = "dict"
         )
-        return await self.add_one(dependency)
+        return await self.merge(dependency)
 
 
     async def find_by_path(self, path: str) -> UUID|None:
@@ -76,7 +76,7 @@ class CamerusRepo(BaseRepo):
             )
             await self.execute(stmt, flush=True)
         else:
-            result = await self.add_one(dependency)
+            result = await self.merge(dependency)
         return result
         
 

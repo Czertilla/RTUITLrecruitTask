@@ -10,10 +10,6 @@ class AbstractRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def find_by_path():
-        raise NotImplementedError
-    
-    @abstractmethod
     async def find_all():
         raise NotImplementedError
 

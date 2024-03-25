@@ -22,7 +22,7 @@ class SCameraRegist(BaseModel):
 
     @validator("CameraType")
     def check_camera_type(cls, value):
-        if value not in (pattern:=CamerusService(CamerusRepo).camerus_pattern_list):
+        if value not in (pattern:=CamerusService.camerus_pattern_list):
             raise ValueError(f"CameraType can be only {'|'.join(pattern)}")
         return value
 

@@ -1,3 +1,5 @@
+from database import Base
+
 from .camerus import DependenciesOrm
 from .cameras import CameraOrm
 from .carowners import CarOwnerORM

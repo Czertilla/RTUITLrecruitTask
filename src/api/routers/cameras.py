@@ -12,12 +12,14 @@ logger = getLogger(__name__)
 
 cameras = APIRouter(prefix="/cameras", tags=["cams"])
 
+
 @cameras.post("/regist")
 async def regist(
     request: SCameraRegist, 
     uow: CameraUOWDep
 ) -> UUID:
     return await CameraService(uow).regist(request)
+
 
 @cameras.post("/case")
 async def send_case(

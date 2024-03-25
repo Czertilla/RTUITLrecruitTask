@@ -27,7 +27,7 @@ async def import_from_xlsx(
     uow: ExportUOWDep,
     current_user: UserORM = Depends(manager),
 ) -> SImportExelRespose:
-    return ExportService(uow).export(table, file)
+    return await ExportService(uow).export(table, file)
 
 @managers.post("/verify")
 async def verify_user(

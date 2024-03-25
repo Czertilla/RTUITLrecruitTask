@@ -57,7 +57,7 @@ class CamerusService(BaseService):
     extraTypes.update(__builtins__)
 
     camerus_list: list[Type[BaseModel]] = []
-    camerus_pattern_list: list[str]
+    camerus_pattern_list: list[str] = []
 
 
     def get_builtin(self, name: str):
@@ -81,18 +81,20 @@ class CamerusService(BaseService):
 
 
     async def generate(self):
-        root_list: tuple[UUID] = await self.uow.camerus.collect()
         async with self.uow:
+            root_list: tuple[UUID] = await self.uow.camerus.collect()
             for root in root_list:
-                self.camerus_list.append(await self.create(
-                    (await self.uow.camerus.find_by_id(root)).key,
-                    await self.uow.camerus.construct(root)
-                    ))
+                self.__class__.camerus_list.append(
+                    await self.create(
+                        (await self.uow.camerus.find_by_id(root)).key,
+                        await self.uow.camerus.construct(root)
+                    )
+                )
         await self.set_pattern()
             
-
-    async def set_pattern(self) -> None:
-        self.camerus_pattern_list = [cam_type.__name__ for cam_type in self.camerus_list]
+    @classmethod
+    async def set_pattern(cls) -> None:
+        cls.camerus_pattern_list = [cam_type.__name__ for cam_type in cls.camerus_list]
 
 
     async def validate(self, data:dict) -> Type[BaseModel] | dict[str, ValidationError]:

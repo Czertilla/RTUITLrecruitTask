@@ -15,7 +15,7 @@ class CameraService(BaseService):
                 "cam_type": await self.uow.camerus.find_by_path(
                     camera_data.pop("CameraType")
                 )
-            })
+            })  
             result = await self.uow.cameras.add_one(camera_data)
             await self.uow.commit()
         return result
