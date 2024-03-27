@@ -4,9 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from logging import getLogger
 
 from pydantic import Field
-from api.dependencies import ExportUOWDep, UserUOWDep
+from api.dependencies import ExportUOWDep, ManagerUOWDep, UserUOWDep
 from services.export import ExportService
-from repositories.users import UserRepo
 from schemas.managers import SImportExelRespose, SVerifyResponse
 from api.auth.core import get_user_manager
 from api.auth.auth import fastapi_users
