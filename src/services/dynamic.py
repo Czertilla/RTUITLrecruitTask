@@ -6,6 +6,9 @@ from pydantic import create_model, BaseModel, ValidationError, Field
 from typing import Type
 from models import DependenciesOrm
 from utils.absract.service import BaseService
+from logging import getLogger
+
+logger = getLogger(__name__)
 
 class Camerus:
     @classmethod
@@ -83,13 +86,17 @@ class CamerusService(BaseService):
     async def generate(self):
         async with self.uow:
             root_list: tuple[UUID] = await self.uow.camerus.collect()
-            for root in root_list:
-                self.__class__.camerus_list.append(
-                    await self.create(
-                        (await self.uow.camerus.find_by_id(root)).key,
-                        await self.uow.camerus.construct(root)
-                    )
+        for root in root_list:
+            async with self.uow:
+                key = (await self.uow.camerus.find_by_id(root)).key
+                data = await self.uow.camerus.construct(root)
+                await self.uow.commit()
+            self.__class__.camerus_list.append(
+                await self.create(
+                    key,
+                    data
                 )
+            )
         await self.set_pattern()
             
     @classmethod
