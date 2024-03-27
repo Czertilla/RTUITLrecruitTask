@@ -20,6 +20,7 @@ SERIALIZE_HEADERS = {
 
 logger = logging.getLogger(__name__)
 
+
 @exc.aiotect
 async def deserialize(bytecode: bytes) -> dict:
     async with aiohttp.ClientSession() as session:
@@ -27,8 +28,8 @@ async def deserialize(bytecode: bytes) -> dict:
             logger.info("Status: %s", response.status)
             logger.info("Content-type: %s", response.headers['content-type'])
             data = await response.json()
-    print(data)
     return data
+
 
 @exc.aiotect
 async def serialize(data: dict) -> bytes:
