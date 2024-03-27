@@ -92,11 +92,7 @@ class CamerusRepo(BaseRepo):
         dependency = await self.find_by_id(dictID)
         if  dependency.value_type != "dict":
             raise TypeError
-        stmt = (
-            select(self.model).
-            where(self.model.enclosure == dictID)
-        )
-        dependencies = (await self.execute(stmt)).scalars().all()
+        dependencies = (await self.find_all(enclosure=dictID))
         return dependencies
 
 
