@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     DB_DBMS: str = "sqlite"
     USERS_SECTRET: str
     PASSW_SECTRET: str
+    K: int
 
     model_config = SettingsConfigDict(env_file=environ, extra="ignore")
 
