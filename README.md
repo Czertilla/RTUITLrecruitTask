@@ -27,7 +27,8 @@ $ git clone https://github.com/Czertilla/RTUITLrecruitTask.git
 ```
 ## используя Docker
 Для данного метода необходимо установить и запустить docker на вашей машине
-создаем файл с названием ".env-non-dev" с содержимым по следующему шаблону
+
+Cоздаем файл с названием ".env-non-dev" с содержимым по следующему шаблону
 ```bash
 DB_HOST=db
 DB_PORT=5454
