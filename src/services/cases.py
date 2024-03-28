@@ -8,7 +8,10 @@ from services.dynamic import CamerusService
 from utils.absract.service import BaseService
 from utils.requests import deserialize
 from secrets import choice
+from utils.settings import getSettings
 
+class Constants:
+    K = getSettings().K
 
 class CaseService(BaseService):
     async def handle_case(
@@ -35,6 +38,30 @@ class CaseService(BaseService):
         for vote in user.votes_list:
             if vote.justify is None:
                 return vote.case_model
+            
+    
+    async def check(self, case_model: CaseORM):
+        length = len(l:=case_model.votes_list)
+        if length < Constants.K:
+            return
+        total = sum(
+            [
+                int(vote.justify) 
+                for vote 
+                in sorted(
+                    l,
+                    key=lambda x: x.timestamp
+                )[:Constants.K]
+            ]
+        )
+        if total == 0 or total == length:
+            await self.close(case_model)
+            if total == 0:
+                await self.convinct(case_model)
+            elif total == length:
+                await self.justify(case_model)
+        else:
+            await self.increase(case_model)
 
 
     async def get_case_response(self, case_model: CaseORM) -> SGetCaseResponse:
@@ -79,4 +106,5 @@ class CaseService(BaseService):
             await self.uow.cases.vote(case_model.id, user.id, justify)
             result = case_model.id
             await self.uow.commit()
+        # await self.check(case_model)
         return result
