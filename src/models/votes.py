@@ -32,6 +32,7 @@ class VoteORM(Base):
     
     case_id: Mapped[UUID] = mapped_column(ForeignKey("cases.id"))
     user_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"))
+    skill: Mapped[int]
     justify: Mapped[bool] = mapped_column(nullable=True, default=None)
     timestamp: Mapped[datetime] = mapped_column(default=func.now())
     
