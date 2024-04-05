@@ -3,6 +3,7 @@ from repositories.cases import CaseRepo
 from repositories.files import FileRepo
 from repositories.users import UserRepo
 from repositories.violations import ViolationRepo
+from repositories.votes import VoteRepo
 from units_of_work._unit_of_work import UnitOfWork
 
 class UserUOW(UnitOfWork):
@@ -17,6 +18,7 @@ class SpecialistUOW(UserUOW):
         rtrn = await super().__aenter__()
         self.cases = CaseRepo(self.session)
         self.files = FileRepo(self.session)
+        self.votes = VoteRepo(self.session)
         self.violations = ViolationRepo(self.session)
         self.users = UserRepo(self.session)
         return rtrn

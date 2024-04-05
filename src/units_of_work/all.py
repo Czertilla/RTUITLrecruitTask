@@ -6,6 +6,7 @@ from repositories.export import ExportRepo
 from repositories.files import FileRepo
 from repositories.users import UserRepo
 from repositories.violations import ViolationRepo
+from repositories.votes import VoteRepo
 from units_of_work._unit_of_work import UnitOfWork
 
 class AllUOW(UnitOfWork):
@@ -19,4 +20,5 @@ class AllUOW(UnitOfWork):
         self.files = FileRepo(self.session)
         self.users = UserRepo(self.session)
         self.violations = ViolationRepo(self.session)
+        self.votes = VoteRepo(self.session)
         return rtrn
