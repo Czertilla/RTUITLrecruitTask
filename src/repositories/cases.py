@@ -1,7 +1,6 @@
 from uuid import UUID
 from models.cases import CaseORM, CaseStatus
-from models.votes import VoteORM
-from sqlalchemy import select, update
+from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from database import BaseRepo
 
@@ -28,24 +27,7 @@ class CaseRepo(BaseRepo):
         )
         return (await self.execute(stmt)).scalars().all()
 
-
-    async def vote(
-        self, 
-        case_id: UUID, 
-        user_id: UUID, 
-        justify: bool
-    ):
-        stmt = (
-            update(VoteORM).
-            where(
-                VoteORM.case_id == case_id,
-                VoteORM.user_id == user_id
-            ).
-            values(
-                justify=justify
-            )
-        )
-        await self.execute(stmt)
-
-        
+    async def close(self, case_model: model):
+        case_model.status = CaseStatus.EXTENDET
+        await self.session.merge(case_model)
         
