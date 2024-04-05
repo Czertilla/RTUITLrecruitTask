@@ -34,6 +34,11 @@ class SQLAlchemyRepository(AbstractRepository):
         if flush:
             await self.session.flush()
         return result
+    
+
+    async def get(self, data_orm: model)-> model:
+        return await self.session.get(self.model, data_orm.id)
+
 
     async def merge(self, data_orm: model, flush=False):
         await self.session.merge(data_orm)
