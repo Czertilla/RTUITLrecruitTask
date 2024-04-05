@@ -9,6 +9,7 @@ from repositories.export import ExportRepo
 from repositories.files import FileRepo
 from repositories.users import UserRepo
 from repositories.violations import ViolationRepo
+from repositories.votes import VoteRepo
 
 
 class ABCUnitOfWork(ABC):
@@ -20,6 +21,7 @@ class ABCUnitOfWork(ABC):
     files: Type[FileRepo]
     users: Type[UserRepo]
     violations: Type[ViolationRepo]
+    votes: Type[VoteRepo]
 
     @abstractmethod
     def __init__(self):
