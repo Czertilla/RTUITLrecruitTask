@@ -4,16 +4,17 @@ from database import Base
 from uuid import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
+from enum import Enum
 
 if TYPE_CHECKING:
     from .users import UserORM
     from .votes import VoteORM
 
-class CaseStatus:
-    INITIATED = "initiated"
-    EXTENDET = "extendet"
-    JUSTIFIED = "justified"
-    CONVICTED = "convicted"
+class CaseStatus(Enum):
+    initiated = "initiated"
+    extended = "extended"
+    justified = "justified"
+    convicted = "convicted"
 
 class CaseORM(Base):
     __tablename__ = "cases"
@@ -26,7 +27,7 @@ class CaseORM(Base):
     violation_value: Mapped[str] = mapped_column(default='')
     skill_value: Mapped[int]
     case_timestamp: Mapped[datetime]
-    status: Mapped[str] = mapped_column(default=CaseStatus.INITIATED)
+    status: Mapped[CaseStatus] = mapped_column(default=CaseStatus.initiated)
     status_timestamp: Mapped[datetime] = mapped_column(default=func.now())
 
     users_list: Mapped[list["UserORM"]] = relationship(
